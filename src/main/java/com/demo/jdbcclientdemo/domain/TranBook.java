@@ -9,7 +9,6 @@ public class TranBook extends BaseDomain {
     private String tranGroup;
     private String tranCode;
     private BigInteger tranRefID;
-    private String sid;
     private BigInteger bookID;
     private String name;
     private String title;
@@ -46,14 +45,6 @@ public class TranBook extends BaseDomain {
         this.tranRefID = tranRefID;
     }
 
-    public String getSid() {
-        return sid;
-    }
-
-    public void setSid(String sid) {
-        this.sid = sid;
-    }
-
     public BigInteger getBookID() {
         return bookID;
     }
@@ -86,7 +77,6 @@ public class TranBook extends BaseDomain {
         sb.append(", tranGroup=").append(tranGroup);
         sb.append(", tranCode=").append(tranCode);
         sb.append(", tranRefID=").append(tranRefID);
-        sb.append(", sid=").append(sid);
         sb.append(", bookID=").append(bookID);
         sb.append(", name=").append(name);
         sb.append(", title=").append(title);

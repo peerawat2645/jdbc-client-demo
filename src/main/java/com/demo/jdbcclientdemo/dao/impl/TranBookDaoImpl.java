@@ -1,17 +1,11 @@
 package com.demo.jdbcclientdemo.dao.impl;
 
-
-import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.demo.jdbcclientdemo.constant.CommonConstant;
 import com.demo.jdbcclientdemo.constant.DatabaseConstant;
-import com.demo.jdbcclientdemo.dao.TranAllDao;
-import com.demo.jdbcclientdemo.domain.Book;
+import com.demo.jdbcclientdemo.dao.TranBookDao;
 import com.demo.jdbcclientdemo.domain.TranAll;
+import com.demo.jdbcclientdemo.domain.TranBook;
+import com.demo.jdbcclientdemo.domain.TranBook;
 import com.demo.jdbcclientdemo.service.LoggerService;
 import com.demo.jdbcclientdemo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,55 +14,67 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public class TranAllDaoImpl implements TranAllDao {
+import java.math.BigInteger;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
+@Repository
+public class TranBookDaoImpl implements TranBookDao {
     @Autowired
     private LoggerService loggerService;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private final String TABLE = "tran_all";
+    private final String TABLE = "tran_book";
     private final String CREATE_DATE = "create_date";
     private final String CREATE_BY = "create_by";
     private final String UPDATE_DATE = "update_date";
     private final String UPDATE_BY = "update_by";
     private final String IS_DELETE = "is_delete";
 
+    private final String BOOK_ID = "book_id";
+    private final String BOOK_NAME = "book_name";
+    private final String BOOK_TITLE = "book_title";
+
     private final String TRAN_ID = "tran_id";
     private final String TRAN_GROUP = "tran_group";
     private final String TRAN_CODE = "tran_code";
     private final String TRAN_REF_ID = "tran_ref_id";
-    private final String SID = "sid";
 
-    final RowMapper<TranAll> ROW_MAPPER = (ResultSet rs, int i) -> {
-        final TranAll mapperObject = new TranAll();
+    final RowMapper<TranBook> ROW_MAPPER = (ResultSet rs, int i) -> {
+        final TranBook mapperObject = new TranBook();
         mapperObject.setCreateDate(rs.getTimestamp(CREATE_DATE));
         mapperObject.setCreateBy(rs.getString(CREATE_BY));
         mapperObject.setUpdateDate(rs.getTimestamp(UPDATE_DATE));
         mapperObject.setUpdateBy(rs.getString(UPDATE_BY));
         mapperObject.setIsDelete(rs.getString(IS_DELETE));
 
+        mapperObject.setBookID(rs.getObject(BOOK_ID) != null ? BigInteger.valueOf(rs.getLong(BOOK_ID)) : null);
+        mapperObject.setTranGroup(rs.getString(BOOK_NAME));
+        mapperObject.setTranCode(rs.getString(BOOK_TITLE));
+
         mapperObject.setTranID(rs.getObject(TRAN_ID) != null ? BigInteger.valueOf(rs.getLong(TRAN_ID)) : null);
         mapperObject.setTranGroup(rs.getString(TRAN_GROUP));
         mapperObject.setTranCode(rs.getString(TRAN_CODE));
         mapperObject.setTranRefID(rs.getObject(TRAN_REF_ID) != null ? BigInteger.valueOf(rs.getLong(TRAN_REF_ID)) : null);
-        mapperObject.setSid(rs.getString(SID));
 
         return mapperObject;
     };
 
     @Override
-    public List<TranAll> find(TranAll findObject) throws Exception {
+    public List<TranBook> find(TranBook findObject) throws Exception {
         StringBuilder sql = new StringBuilder();
-        List<TranAll> resultList = new ArrayList<>();
+        List<TranBook> resultList = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
         try {
 
-            sql.append(" select * ").append(DatabaseConstant.FROM).append(TABLE);
-            sql.append(DatabaseConstant.WHERE_0_EQUAL_0);
+            sql.append(" select * from ").append(TABLE);
+            sql.append(" where 0 = 0 ");
 
             if (findObject != null) {
                 if (findObject.getCreateDate() != null) {
@@ -106,6 +112,27 @@ public class TranAllDaoImpl implements TranAllDao {
                             .append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getIsDelete());
                 }
+                if (findObject.getBookID() != null) {
+                    sql
+                            .append(DatabaseConstant.AND)
+                            .append(BOOK_ID)
+                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    parameters.add(findObject.getBookID().longValue());
+                }
+                if (StringUtils.isNotEmptyOrNull(findObject.getName())) {
+                    sql
+                            .append(DatabaseConstant.AND)
+                            .append(BOOK_NAME)
+                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    parameters.add(findObject.getName());
+                }
+                if (StringUtils.isNotEmptyOrNull(findObject.getTitle())) {
+                    sql
+                            .append(DatabaseConstant.AND)
+                            .append(BOOK_TITLE)
+                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    parameters.add(findObject.getTitle());
+                }
                 if (findObject.getTranID() != null) {
                     sql
                             .append(DatabaseConstant.AND)
@@ -134,13 +161,6 @@ public class TranAllDaoImpl implements TranAllDao {
                             .append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranRefID().longValue());
                 }
-                if (StringUtils.isNotEmptyOrNull(findObject.getSid())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(SID)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
-                    parameters.add(findObject.getSid());
-                }
 
             }
 
@@ -168,7 +188,7 @@ public class TranAllDaoImpl implements TranAllDao {
     }
 
     @Override
-    public void insert(List<TranAll> insertObjectList) throws Exception {
+    public void insert(List<TranBook> insertObjectList) throws Exception {
         StringBuilder sql = new StringBuilder();
         StringBuilder prepareObject = new StringBuilder();
         ArrayList<Object> parameters = new ArrayList<>();
@@ -185,6 +205,12 @@ public class TranAllDaoImpl implements TranAllDao {
                     .append(DatabaseConstant.SIGN_COMMA);
 
             sql
+                    .append(BOOK_ID)
+                    .append(DatabaseConstant.SIGN_COMMA)
+                    .append(BOOK_NAME)
+                    .append(DatabaseConstant.SIGN_COMMA)
+                    .append(BOOK_TITLE)
+                    .append(DatabaseConstant.SIGN_COMMA)
                     .append(TRAN_ID)
                     .append(DatabaseConstant.SIGN_COMMA)
                     .append(TRAN_GROUP)
@@ -192,17 +218,19 @@ public class TranAllDaoImpl implements TranAllDao {
                     .append(TRAN_CODE)
                     .append(DatabaseConstant.SIGN_COMMA)
                     .append(TRAN_REF_ID)
-                    .append(DatabaseConstant.SIGN_COMMA)
-                    .append(SID)
                     .append(")");
 
             if (insertObjectList != null && !insertObjectList.isEmpty()) {
                 int size = insertObjectList.size();
                 sql.append(" values ");
                 for (int i = 0; i < size; i++) {
-                    TranAll insertObj = insertObjectList.get(i);
+                    TranBook insertObj = insertObjectList.get(i);
 
                     sql.append(" ( ")
+                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
+                            .append(DatabaseConstant.SIGN_COMMA)
+                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
+                            .append(DatabaseConstant.SIGN_COMMA)
                             .append(DatabaseConstant.SIGN_QUESTION_MARK)
                             .append(DatabaseConstant.SIGN_COMMA)
                             .append(DatabaseConstant.SIGN_QUESTION_MARK)
@@ -229,12 +257,15 @@ public class TranAllDaoImpl implements TranAllDao {
                     parameters.add(insertObj.getCreateDate());
                     parameters.add(insertObj.getCreateBy());
 
+                    parameters.add(insertObj.getBookID() != null ? insertObj.getBookID().longValue() : null);
+                    parameters.add(insertObj.getName());
+                    parameters.add(insertObj.getTitle());
+
                     parameters.add(insertObj.getTranID() != null ? insertObj.getTranID().longValue() : null);
                     parameters.add(insertObj.getTranGroup());
                     parameters.add(insertObj.getTranCode());
 
                     parameters.add(insertObj.getTranRefID() != null ? insertObj.getTranRefID().longValue() : null);
-                    parameters.add(insertObj.getSid());
 
                 }
             }
@@ -256,9 +287,9 @@ public class TranAllDaoImpl implements TranAllDao {
     }
 
     @Override
-    public TranAll findById(BigInteger id) throws Exception {
+    public TranBook findById(BigInteger id) throws Exception {
         StringBuilder sql = new StringBuilder();
-        TranAll resultTranAll = null;
+        TranBook resultTranBook = null;
         List<Object> parameters = new ArrayList<>();
 
         try {
@@ -271,10 +302,10 @@ public class TranAllDaoImpl implements TranAllDao {
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_PARAMETERS, Arrays.toString(parameters.toArray()));
 
-            List<TranAll> resultList = jdbcTemplate.query(sql.toString(), parameters.toArray(), ROW_MAPPER);
+            List<TranBook> resultList = jdbcTemplate.query(sql.toString(), parameters.toArray(), ROW_MAPPER);
 
             if (!resultList.isEmpty()) {
-                resultTranAll = resultList.get(0);
+                resultTranBook = resultList.get(0);
             }
 
         } catch (DataAccessException e) {
@@ -285,8 +316,9 @@ public class TranAllDaoImpl implements TranAllDao {
             throw e;
         }
 
-        return resultTranAll;
+        return resultTranBook;
     }
+
 
 
 }
