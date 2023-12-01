@@ -1,16 +1,9 @@
 package com.demo.jdbcclientdemo.dao.impl;
 
 
-import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.demo.jdbcclientdemo.constant.CommonConstant;
 import com.demo.jdbcclientdemo.constant.DatabaseConstant;
 import com.demo.jdbcclientdemo.dao.TranAllDao;
-import com.demo.jdbcclientdemo.domain.Book;
 import com.demo.jdbcclientdemo.domain.TranAll;
 import com.demo.jdbcclientdemo.service.LoggerService;
 import com.demo.jdbcclientdemo.util.StringUtils;
@@ -19,6 +12,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigInteger;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Repository
 public class TranAllDaoImpl implements TranAllDao {
@@ -261,6 +260,7 @@ public class TranAllDaoImpl implements TranAllDao {
         TranAll resultTranAll = null;
         List<Object> parameters = new ArrayList<>();
 
+        String refID = id != null ? String.valueOf(id) : null;
         try {
             sql.append("SELECT * ").append(DatabaseConstant.FROM).append(TABLE);
             sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
@@ -278,10 +278,10 @@ public class TranAllDaoImpl implements TranAllDao {
             }
 
         } catch (DataAccessException e) {
-            loggerService.printStackTraceToErrorLog(id != null ? String.valueOf(id) : null, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(refID, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
             throw e;
         } catch (Exception e) {
-            loggerService.printStackTraceToErrorLog(id != null ? String.valueOf(id) : null, CommonConstant.LOG_DATABASE_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(refID, CommonConstant.LOG_DATABASE_EXCEPTION, e);
             throw e;
         }
 

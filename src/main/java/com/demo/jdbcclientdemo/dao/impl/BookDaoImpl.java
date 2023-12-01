@@ -4,8 +4,6 @@ import com.demo.jdbcclientdemo.constant.CommonConstant;
 import com.demo.jdbcclientdemo.constant.DatabaseConstant;
 import com.demo.jdbcclientdemo.dao.BookDao;
 import com.demo.jdbcclientdemo.domain.Book;
-import com.demo.jdbcclientdemo.domain.TranAll;
-import com.demo.jdbcclientdemo.domain.TranBook;
 import com.demo.jdbcclientdemo.service.LoggerService;
 import com.demo.jdbcclientdemo.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +104,7 @@ public class BookDaoImpl implements BookDao {
             resultList = jdbcTemplate.query(sql.toString(), ROW_MAPPER);
 
             int start = (int) pageable.getOffset();
-            int end = (start + pageable.getPageSize()) > resultList.size() ? resultList.size() : (start + pageable.getPageSize());
+            int end = Math.min((start + pageable.getPageSize()), resultList.size());
 
             return new PageImpl<>(resultList.subList(start, end), pageable, resultList.size());
 
@@ -139,7 +137,7 @@ public class BookDaoImpl implements BookDao {
             resultList = jdbcTemplate.query(sql.toString(), ROW_MAPPER, "%" + name + "%"); // Adjust to your database's wildcard syntax
 
             int start = (int) pageable.getOffset();
-            int end = (start + pageable.getPageSize()) > resultList.size() ? resultList.size() : (start + pageable.getPageSize());
+            int end = Math.min((start + pageable.getPageSize()), resultList.size());
 
             return new PageImpl<>(resultList.subList(start, end), pageable, resultList.size());
 

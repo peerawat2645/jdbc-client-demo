@@ -2,7 +2,6 @@ package com.demo.jdbcclientdemo.controller;
 
 import com.demo.jdbcclientdemo.constant.CommonConstant;
 import com.demo.jdbcclientdemo.constant.ServiceNameConstant;
-import com.demo.jdbcclientdemo.domain.Book;
 import com.demo.jdbcclientdemo.model.rest.BaseResponse;
 import com.demo.jdbcclientdemo.model.rest.request.InsertBookRequest;
 import com.demo.jdbcclientdemo.model.rest.request.UpdateBookRequest;
@@ -14,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @RestController
 @CrossOrigin("*")

@@ -71,17 +71,14 @@ public class BookServiceImpl implements BookService {
     public GetBookPageableResponse getAll(int page) throws Exception {
         Date currentDate = new Date();
         try {
-            // Create a Pageable object for pagination
             Pageable pageable = PageRequest.of(page - 1, CommonConstant.SIZE);
 
-            // Fetch a page of books from the repository using Pageable
             Page<Book> bookPage = (Page<Book>) bookDao.findAll(pageable);
 
             GetBookPageableResponse getBookPageableResponse = new GetBookPageableResponse();
 
             getBookPageableResponse.setBooks(bookPage);
 
-            // Construct a response object containing the page of books
             return getBookPageableResponse;
 
         } catch (DataAccessException e) {
@@ -96,17 +93,14 @@ public class BookServiceImpl implements BookService {
     public GetBookPageableResponse getAllByName(String name, int page) throws Exception {
         Date currentDate = new Date();
         try {
-            // Create a Pageable object for pagination
             Pageable pageable = PageRequest.of(page - 1, CommonConstant.SIZE);
 
-            // Fetch a page of books from the repository using Pageable
             Page<Book> bookPage = (Page<Book>) bookDao.findAllByName(name, pageable);
 
             GetBookPageableResponse getBookPageableResponse = new GetBookPageableResponse();
 
             getBookPageableResponse.setBooks(bookPage);
 
-            // Construct a response object containing the page of books
             return getBookPageableResponse;
 
         } catch (DataAccessException e) {

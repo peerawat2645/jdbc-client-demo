@@ -5,18 +5,13 @@
  */
 package com.demo.jdbcclientdemo.service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.demo.jdbcclientdemo.constant.CommonConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-/**
- *
- * @author Anuwat_K
- */
+import java.text.SimpleDateFormat;
+import java.util.Date;
 @Component
 public class LoggerService {
 

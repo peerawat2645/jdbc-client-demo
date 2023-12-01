@@ -3,8 +3,6 @@ package com.demo.jdbcclientdemo.dao.impl;
 import com.demo.jdbcclientdemo.constant.CommonConstant;
 import com.demo.jdbcclientdemo.constant.DatabaseConstant;
 import com.demo.jdbcclientdemo.dao.TranBookDao;
-import com.demo.jdbcclientdemo.domain.TranAll;
-import com.demo.jdbcclientdemo.domain.TranBook;
 import com.demo.jdbcclientdemo.domain.TranBook;
 import com.demo.jdbcclientdemo.service.LoggerService;
 import com.demo.jdbcclientdemo.util.StringUtils;
@@ -18,7 +16,6 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -292,6 +289,7 @@ public class TranBookDaoImpl implements TranBookDao {
         TranBook resultTranBook = null;
         List<Object> parameters = new ArrayList<>();
 
+        String refID = id != null ? String.valueOf(id) : null;
         try {
             sql.append("SELECT * ").append(DatabaseConstant.FROM).append(TABLE);
             sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
@@ -309,16 +307,15 @@ public class TranBookDaoImpl implements TranBookDao {
             }
 
         } catch (DataAccessException e) {
-            loggerService.printStackTraceToErrorLog(id != null ? String.valueOf(id) : null, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(refID, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
             throw e;
         } catch (Exception e) {
-            loggerService.printStackTraceToErrorLog(id != null ? String.valueOf(id) : null, CommonConstant.LOG_DATABASE_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(refID, CommonConstant.LOG_DATABASE_EXCEPTION, e);
             throw e;
         }
 
         return resultTranBook;
     }
-
 
 
 }
