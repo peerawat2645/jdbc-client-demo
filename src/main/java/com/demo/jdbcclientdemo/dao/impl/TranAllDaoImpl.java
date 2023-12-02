@@ -71,73 +71,43 @@ public class TranAllDaoImpl implements TranAllDao {
 
             if (findObject != null) {
                 if (findObject.getCreateDate() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(CREATE_DATE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(CREATE_DATE).append(DatabaseConstant.EQUAL_STR_DATE_QUESTION_MARK);
                     parameters.add(findObject.getCreateDate());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getCreateBy())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(CREATE_BY)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(CREATE_BY).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getCreateBy());
                 }
                 if (findObject.getUpdateDate() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(UPDATE_DATE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(UPDATE_DATE).append(DatabaseConstant.EQUAL_STR_DATE_QUESTION_MARK);
                     parameters.add(findObject.getUpdateDate());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getUpdateBy())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(UPDATE_BY)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(UPDATE_BY).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getUpdateBy());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getIsDelete())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(IS_DELETE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(IS_DELETE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getIsDelete());
                 }
                 if (findObject.getTranID() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_ID)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranID().longValue());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getTranGroup())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_GROUP)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_GROUP).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranGroup());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getTranCode())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_CODE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranCode());
                 }
                 if (findObject.getTranRefID() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_REF_ID)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_REF_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranRefID().longValue());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getSid())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(SID)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(SID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getSid());
                 }
 
@@ -145,21 +115,17 @@ public class TranAllDaoImpl implements TranAllDao {
 
             sql.append(" order by ").append(CREATE_DATE).append(" DESC ");
 
-            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY,
-                    sql.toString());
-            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_PARAMETERS,
-                    Arrays.toString(parameters.toArray()));
+            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
+            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_PARAMETERS, Arrays.toString(parameters.toArray()));
 
             resultList = jdbcTemplate.query(sql.toString(), parameters.toArray(), ROW_MAPPER);
 
         } catch (DataAccessException e) {
-            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getTranID()) : null,
-                    CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getTranID()) : null, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
             throw e;
 
         } catch (Exception e) {
-            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getTranID()) : null,
-                    CommonConstant.LOG_DATABASE_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getTranID()) : null, CommonConstant.LOG_DATABASE_EXCEPTION, e);
             throw e;
         }
 
@@ -167,33 +133,16 @@ public class TranAllDaoImpl implements TranAllDao {
     }
 
     @Override
-    public void insert(List<TranAll> insertObjectList) throws Exception {
+    public BigInteger insert(List<TranAll> insertObjectList) throws Exception {
         StringBuilder sql = new StringBuilder();
         StringBuilder prepareObject = new StringBuilder();
         ArrayList<Object> parameters = new ArrayList<>();
 
         try {
 
-            sql
-                    .append(" insert into ").append(TABLE).append(" (")
-                    .append(IS_DELETE)
-                    .append(DatabaseConstant.SIGN_COMMA)
-                    .append(CREATE_DATE)
-                    .append(DatabaseConstant.SIGN_COMMA)
-                    .append(CREATE_BY)
-                    .append(DatabaseConstant.SIGN_COMMA);
+            sql.append(" insert into ").append(TABLE).append(" (").append(IS_DELETE).append(DatabaseConstant.SIGN_COMMA).append(CREATE_DATE).append(DatabaseConstant.SIGN_COMMA).append(CREATE_BY).append(DatabaseConstant.SIGN_COMMA);
 
-            sql
-                    .append(TRAN_ID)
-                    .append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_GROUP)
-                    .append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_CODE)
-                    .append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_REF_ID)
-                    .append(DatabaseConstant.SIGN_COMMA)
-                    .append(SID)
-                    .append(")");
+            sql.append(TRAN_ID).append(DatabaseConstant.SIGN_COMMA).append(TRAN_GROUP).append(DatabaseConstant.SIGN_COMMA).append(TRAN_CODE).append(DatabaseConstant.SIGN_COMMA).append(TRAN_REF_ID).append(DatabaseConstant.SIGN_COMMA).append(SID).append(")");
 
             if (insertObjectList != null && !insertObjectList.isEmpty()) {
                 int size = insertObjectList.size();
@@ -201,23 +150,7 @@ public class TranAllDaoImpl implements TranAllDao {
                 for (int i = 0; i < size; i++) {
                     TranAll insertObj = insertObjectList.get(i);
 
-                    sql.append(" ( ")
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(" ) ");
+                    sql.append(" ( ").append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(" ) ");
 
                     if (i < size - 1) {
                         sql.append(DatabaseConstant.SIGN_COMMA);
@@ -245,6 +178,10 @@ public class TranAllDaoImpl implements TranAllDao {
 
             jdbcTemplate.update(sql.toString(), parameters.toArray());
 
+            // Fetch the last inserted ID
+            BigInteger lastInsertedId = BigInteger.valueOf(jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class));
+            return lastInsertedId;
+
         } catch (DataAccessException e) {
             loggerService.printStackTraceToErrorLog(TABLE, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
             throw e;
@@ -263,8 +200,7 @@ public class TranAllDaoImpl implements TranAllDao {
         String refID = id != null ? String.valueOf(id) : null;
         try {
             sql.append("SELECT * ").append(DatabaseConstant.FROM).append(TABLE);
-            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
-                    .append(TRAN_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND).append(TRAN_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
 
             parameters.add(id);
 

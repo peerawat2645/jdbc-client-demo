@@ -14,23 +14,23 @@ public class BookControllerValidator {
 
     protected void insertBookValidation(InsertBookRequest request) throws ServiceValidation {
 
-        if (request.getName() != null && !validator.validateLength(request.getName(), 200)) {
+        if (null != request.getName() && !validator.validateLength(request.getName(), 200)) {
             throw new ServiceValidation(ExceptionConstant.ERROR_CODE_BOOK_NAME_IS_INVALID);
         }
-        if (request.getTitle() != null && !validator.validateLength(request.getTitle(), 50)) {
+        if (null != request.getTitle() && !validator.validateLength(request.getTitle(), 50)) {
             throw new ServiceValidation(ExceptionConstant.ERROR_CODE_BOOK_TITLE_IS_INVALID);
         }
     }
 
     protected void updateBookValidation(UpdateBookRequest request) throws ServiceValidation {
 
-        if (request.getBookID() == null || !validator.validateLength(request.getBookID().toString(), 20)) {
+        if (null != request.getBookID() || !validator.validateLength(request.getBookID().toString(), 20)) {
             throw new ServiceValidation(ExceptionConstant.ERROR_CODE_BOOK_ID_IS_INVALID);
         }
-        if (request.getName() != null && !validator.validateLength(request.getName(), 200)) {
+        if (null != request.getName() && !validator.validateLength(request.getName(), 200)) {
             throw new ServiceValidation(ExceptionConstant.ERROR_CODE_BOOK_NAME_IS_INVALID);
         }
-        if (request.getTitle() != null && !validator.validateLength(request.getTitle(), 50)) {
+        if (null != request.getTitle() && !validator.validateLength(request.getTitle(), 50)) {
             throw new ServiceValidation(ExceptionConstant.ERROR_CODE_BOOK_TITLE_IS_INVALID);
         }
     }

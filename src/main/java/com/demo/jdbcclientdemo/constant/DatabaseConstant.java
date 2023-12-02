@@ -12,6 +12,7 @@ public class DatabaseConstant {
     public static final String OR = " or ";
     public static final String LIKE_QUESTION_MARK = " like ? ";
     public static final String EQUAL_QUESTION_MARK = " = ? ";
+    public static final  String EQUAL_STR_DATE_QUESTION_MARK = " = STR_TO_DATE(?, '%a %b %d %H:%i:%s ICT %Y') ";
     public static final String SIGN_QUESTION_MARK = " ? ";
     public static final String SIGN_COMMA = ",";
     public static final String OPEN_PARENTHESIS = " ( ";

@@ -31,13 +31,10 @@ public class BookController extends BookControllerValidator {
         Date startDate = new Date();
         GetBookResponse response;
 
-        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID,
-                ServiceNameConstant.SERVICE_GET_BOOK_All + CommonConstant.BEGIN,
-                null, null);
+        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID, ServiceNameConstant.SERVICE_GET_BOOK_All + CommonConstant.BEGIN, null, null);
 
         response = bookService.getAll();
-        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_GET_BOOK_All + CommonConstant.END,
-                CommonConstant.SID, null, response);
+        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_GET_BOOK_All + CommonConstant.END, CommonConstant.SID, null, response);
         return response;
     }
 
@@ -46,35 +43,28 @@ public class BookController extends BookControllerValidator {
         Date startDate = new Date();
         GetBookPageableResponse response;
 
-        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID,
-                ServiceNameConstant.SERVICE_GET_BOOK_All_PAGE + CommonConstant.BEGIN,
-                null, null);
+        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID, ServiceNameConstant.SERVICE_GET_BOOK_All_PAGE + CommonConstant.BEGIN, null, null);
 
         response = bookService.getAll(page);
-        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_GET_BOOK_All_PAGE + CommonConstant.END,
-                CommonConstant.SID, null, response);
+        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_GET_BOOK_All_PAGE + CommonConstant.END, CommonConstant.SID, null, response);
         return response;
     }
 
     @PostMapping(ServiceNameConstant.SERVICE_SEARCH_BOOK)
-    public Object getAllByPageable(@PathVariable(value = "name", required = false) String name,
-                                   @PathVariable("page") int page) throws Exception {
+    public Object getAllByPageable(@PathVariable(value = "name", required = false) String name, @PathVariable("page") int page) throws Exception {
         Date startDate = new Date();
         GetBookPageableResponse response;
 
-        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID,
-                ServiceNameConstant.SERVICE_SEARCH_BOOK + CommonConstant.BEGIN,
-                null, null);
+        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID, ServiceNameConstant.SERVICE_SEARCH_BOOK + CommonConstant.BEGIN, null, null);
 
         String url;
-        if (name != null && !name.isEmpty()) {
+        if (null != name && !name.isEmpty()) {
             response = bookService.getAllByName(name, page);
         } else {
             response = bookService.getAll(page);
         }
 
-        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_SEARCH_BOOK + CommonConstant.END,
-                CommonConstant.SID, null, response);
+        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_SEARCH_BOOK + CommonConstant.END, CommonConstant.SID, null, response);
         return response;
     }
 
@@ -84,15 +74,12 @@ public class BookController extends BookControllerValidator {
         Date startDate = new Date();
         GetBookResponse response;
 
-        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID,
-                ServiceNameConstant.SERVICE_INSERT_BOOK + CommonConstant.BEGIN,
-                book, null);
+        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID, ServiceNameConstant.SERVICE_INSERT_BOOK + CommonConstant.BEGIN, book, null);
 
         insertBookValidation(book);
 
         response = bookService.insert(book);
-        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_INSERT_BOOK + CommonConstant.END,
-                CommonConstant.SID, book, response);
+        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_INSERT_BOOK + CommonConstant.END, CommonConstant.SID, book, response);
         return response;
     }
 
@@ -101,15 +88,12 @@ public class BookController extends BookControllerValidator {
         Date startDate = new Date();
         GetBookResponse response;
 
-        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID,
-                ServiceNameConstant.SERVICE_UPDATE_BOOK + CommonConstant.BEGIN,
-                book, null);
+        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID, ServiceNameConstant.SERVICE_UPDATE_BOOK + CommonConstant.BEGIN, book, null);
 
         updateBookValidation(book);
 
         response = bookService.update(book);
-        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_UPDATE_BOOK + CommonConstant.END,
-                CommonConstant.SID, book, response);
+        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_UPDATE_BOOK + CommonConstant.END, CommonConstant.SID, book, response);
         return response;
     }
 
@@ -118,13 +102,10 @@ public class BookController extends BookControllerValidator {
         Date startDate = new Date();
         GetBookResponse response;
 
-        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID,
-                ServiceNameConstant.SERVICE_FIND_BOOK + CommonConstant.BEGIN,
-                id, null);
+        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID, ServiceNameConstant.SERVICE_FIND_BOOK + CommonConstant.BEGIN, id, null);
 
         response = bookService.findById(id);
-        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_FIND_BOOK + CommonConstant.END,
-                CommonConstant.SID, id, response);
+        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_FIND_BOOK + CommonConstant.END, CommonConstant.SID, id, response);
         return response;
     }
 
@@ -133,13 +114,10 @@ public class BookController extends BookControllerValidator {
         Date startDate = new Date();
         BaseResponse response;
 
-        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID,
-                ServiceNameConstant.SERVICE_DELETE_BOOK + CommonConstant.BEGIN,
-                id, null);
+        loggerService.accessLogger(startDate, new Date(), CommonConstant.SID, ServiceNameConstant.SERVICE_DELETE_BOOK + CommonConstant.BEGIN, id, null);
 
         response = bookService.deleteById(id);
-        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_DELETE_BOOK + CommonConstant.END,
-                CommonConstant.SID, id, response);
+        loggerService.accessLogger(startDate, new Date(), ServiceNameConstant.SERVICE_DELETE_BOOK + CommonConstant.END, CommonConstant.SID, id, response);
         return response;
     }
 }

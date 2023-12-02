@@ -9,7 +9,7 @@ public interface TranAllDao {
 
     public List<TranAll> find(TranAll findObject) throws Exception;
 
-    public void insert(List<TranAll> insertObjectList) throws Exception;
+    public BigInteger insert(List<TranAll> insertObjectList) throws Exception;
 
     public TranAll findById(BigInteger id) throws Exception;
 

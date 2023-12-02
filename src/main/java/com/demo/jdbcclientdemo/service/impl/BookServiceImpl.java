@@ -48,7 +48,7 @@ public class BookServiceImpl implements BookService {
         Date currentDate = new Date();
         try {
             List<Book> bookListDB = bookDao.findAll();
-            if (bookListDB != null && !bookListDB.isEmpty()) {
+            if (null != bookListDB && !bookListDB.isEmpty()) {
                 response.setBooks(bookListDB);
             }
             System.out.println(response);
@@ -118,9 +118,9 @@ public class BookServiceImpl implements BookService {
         GetBookResponse response = new GetBookResponse();
 
         //1) Insert data to main transaction.
-        insertTransactionMain(CommonConstant.TRAN_CREATE_BOOK, CommonConstant.FLAG_N, null, currentDate);
+        BigInteger tranAllID = insertTransactionMain(CommonConstant.TRAN_CREATE_BOOK, CommonConstant.FLAG_N, null, currentDate);
 
-        TranAll tranAll = findTransactionMain(null, CommonConstant.TRAN_CREATE_BOOK, CommonConstant.FLAG_N, null, null, null, currentDate);
+        TranAll tranAll = tranAllDao.findById(tranAllID);
 
         Book book = new Book();
         book.setCreateDate(currentDate);
@@ -135,15 +135,14 @@ public class BookServiceImpl implements BookService {
         book.setTranStatusGroup(CommonConstant.TRAN_GROUP);
         book.setTranStatusCode(CommonConstant.FLAG_ACTIVE);
 
-        bookDao.insert(book);
-        loggerService.systemLogger(CommonConstant.SID, "Insert book complete.",
-                book);
+        BigInteger bookID = bookDao.insert(book);
+        loggerService.systemLogger(CommonConstant.SID, "Insert book complete.", book);
 
-        book = findBook(null, book.getName(), book.getTitle(), null, null, null, null, currentDate);
+        book = bookDao.findById(bookID);
 
         insertTransactionBookMain(CommonConstant.FLAG_N, book.getBookID(), book.getName(), book.getTitle(), CommonConstant.TRAN_CREATE_BOOK, tranAll.getTranID(), null, currentDate);
 
-        book.setTranIDGenerate(tranAll.getTranID());
+        book.setTranIDGenerate(tranAllID);
 
         bookDao.update(book);
 
@@ -165,13 +164,16 @@ public class BookServiceImpl implements BookService {
 
         Book book = bookDao.findById(updateBookRequest.getBookID());
 
-        TranBook tranBook = findTransactionBookMain(book.getBookID(), CommonConstant.FLAG_N, null, null
-                , null, null, book.getName(), book.getTitle(), book.getTranIDGenerate()
-                , null);
+        TranBook tranBook;
+        if (null != book.getTranIDVerify()) {
+            tranBook = tranBookDao.findById(book.getTranIDVerify());
+        } else {
+            tranBook = tranBookDao.findById(book.getTranIDGenerate());
+        }
 
-        insertTransactionMain(CommonConstant.TRAN_UPDATE_BOOK, CommonConstant.FLAG_N, tranBook.getTranID(), currentDate);
+        BigInteger id = insertTransactionMain(CommonConstant.TRAN_UPDATE_BOOK, CommonConstant.FLAG_N, tranBook.getTranID(), currentDate);
 
-        TranAll tranAll = findTransactionMain(null, CommonConstant.TRAN_UPDATE_BOOK, CommonConstant.FLAG_N, null, null, tranBook.getTranID(), currentDate);
+        TranAll tranAll = tranAllDao.findById(id);
 
         insertTransactionBookMain(CommonConstant.FLAG_N, updateBookRequest.getBookID(), updateBookRequest.getName(), updateBookRequest.getTitle(), CommonConstant.TRAN_UPDATE_BOOK, tranAll.getTranID(), tranBook.getTranID(), currentDate);
 
@@ -214,24 +216,22 @@ public class BookServiceImpl implements BookService {
         BaseResponse response = new BaseResponse();
 
         Book book = bookDao.findById(bookID);
-        if (book != null) {
+        if (null != book) {
             Date currentDate = new Date();
             TranBook tranBook;
-            if(book.getTranIDVerify() != null) {
+            if (null != book.getTranIDVerify()) {
                 tranBook = tranBookDao.findById(book.getTranIDVerify());
-            }
-            else{
+            } else {
                 tranBook = tranBookDao.findById(book.getTranIDGenerate());
             }
             TranAll tranAll;
-            if(tranBook.getTranRefID() != null) {
+            if (null != tranBook.getTranRefID()) {
                 tranAll = tranAllDao.findById(tranBook.getTranRefID());
-            }
-            else{
+            } else {
                 tranAll = tranAllDao.findById(tranBook.getTranID());
             }
-            insertTransactionMain(CommonConstant.TRAN_DELETE_BOOK, CommonConstant.FLAG_Y, tranAll.getTranID(), currentDate);
-            tranAll = findTransactionMain(null, CommonConstant.TRAN_DELETE_BOOK, CommonConstant.FLAG_Y, null, null, tranAll.getTranID(), currentDate);
+            BigInteger id = insertTransactionMain(CommonConstant.TRAN_DELETE_BOOK, CommonConstant.FLAG_Y, tranAll.getTranID(), currentDate);
+            tranAll = tranAllDao.findById(id);
             insertTransactionBookMain(CommonConstant.FLAG_Y, bookID, book.getName(), book.getTitle(), CommonConstant.TRAN_DELETE_BOOK, tranAll.getTranID(), tranAll.getTranID(), currentDate);
             book.setIsDelete(CommonConstant.FLAG_Y);
             book.setTranStatusCode(CommonConstant.FLAG_INACTIVE);
@@ -247,7 +247,7 @@ public class BookServiceImpl implements BookService {
         return response;
     }
 
-    private void insertTransactionMain(String tranCode, String isDelete, BigInteger tranRefID, Date date) throws Exception {
+    private BigInteger insertTransactionMain(String tranCode, String isDelete, BigInteger tranRefID, Date date) throws Exception {
 
 
         TranAll tranAllInsertObj = new TranAll();
@@ -262,53 +262,9 @@ public class BookServiceImpl implements BookService {
 
         List<TranAll> tranAllInsertObjList = new ArrayList<>();
         tranAllInsertObjList.add(tranAllInsertObj);
-        tranAllDao.insert(tranAllInsertObjList);
-        loggerService.systemLogger(CommonConstant.SID, "Insert transaction main complete.",
-                tranAllInsertObj);
-    }
-
-    private TranAll findTransactionMain(BigInteger tranID, String tranCode, String isDelete, Date updateDate, String updateBy, BigInteger tranRefID, Date date) throws Exception {
-
-        TranAll tranAllFindObj = new TranAll();
-        tranAllFindObj.setTranID(tranID);
-        tranAllFindObj.setCreateDate(date);
-        tranAllFindObj.setCreateBy(CommonConstant.SYSTEM);
-        tranAllFindObj.setIsDelete(isDelete);
-        tranAllFindObj.setUpdateDate(updateDate);
-        tranAllFindObj.setUpdateBy(updateBy);
-
-        tranAllFindObj.setTranGroup(CommonConstant.TRAN_GROUP);
-        tranAllFindObj.setTranCode(tranCode);
-        tranAllFindObj.setTranRefID(tranRefID);
-        tranAllFindObj.setSid(CommonConstant.SID);
-
-        List<TranAll> tranAllList = tranAllDao.find(tranAllFindObj);
-        loggerService.systemLogger(CommonConstant.SID, "find transaction main complete.",
-                tranAllFindObj);
-        return tranAllList.get(0);
-    }
-
-    private Book findBook(BigInteger bookID, String name, String title, BigInteger tranIDGenerate, BigInteger tranIDVerify, Date updateDate, String updateBy, Date date) throws Exception {
-
-        Book bookFindObj = new Book();
-        bookFindObj.setBookID(bookID);
-        bookFindObj.setCreateDate(date);
-        bookFindObj.setCreateBy(CommonConstant.SYSTEM);
-        bookFindObj.setIsDelete(CommonConstant.FLAG_N);
-        bookFindObj.setUpdateDate(updateDate);
-        bookFindObj.setUpdateBy(updateBy);
-
-        bookFindObj.setName(name);
-        bookFindObj.setTitle(title);
-        bookFindObj.setTranIDGenerate(tranIDGenerate);
-        bookFindObj.setTranIDVerify(tranIDVerify);
-        bookFindObj.setTranStatusGroup(CommonConstant.TRAN_GROUP);
-        bookFindObj.setTranStatusCode(CommonConstant.FLAG_ACTIVE);
-
-        List<Book> bookList = bookDao.find(bookFindObj);
-        loggerService.systemLogger(CommonConstant.SID, "find book complete.",
-                bookFindObj);
-        return bookList.get(0);
+        BigInteger id = tranAllDao.insert(tranAllInsertObjList);
+        loggerService.systemLogger(CommonConstant.SID, "Insert transaction main complete.", tranAllInsertObj);
+        return id;
     }
 
     private void insertTransactionBookMain(String isDelete, BigInteger bookID, String name, String title, String tranCode, BigInteger tranID, BigInteger tranRefID, Date date) throws Exception {
@@ -330,32 +286,7 @@ public class BookServiceImpl implements BookService {
         List<TranBook> tranBookInsertObjList = new ArrayList<>();
         tranBookInsertObjList.add(tranBookInsertObj);
         tranBookDao.insert(tranBookInsertObjList);
-        loggerService.systemLogger(CommonConstant.SID, "Insert transaction book complete.",
-                tranBookInsertObjList);
-    }
-
-    private TranBook findTransactionBookMain(BigInteger bookID, String isDelete, Date updateDate, String updateBy, String tranCode, BigInteger tranRefID, String name, String title, BigInteger tranID, Date date) throws Exception {
-
-
-        TranBook tranBookFindObj = new TranBook();
-        tranBookFindObj.setCreateDate(date);
-        tranBookFindObj.setCreateBy(CommonConstant.SYSTEM);
-        tranBookFindObj.setIsDelete(isDelete);
-        tranBookFindObj.setUpdateDate(updateDate);
-        tranBookFindObj.setUpdateBy(updateBy);
-
-        tranBookFindObj.setBookID(bookID);
-        tranBookFindObj.setName(name);
-        tranBookFindObj.setTitle(title);
-        tranBookFindObj.setTranGroup(CommonConstant.TRAN_GROUP);
-        tranBookFindObj.setTranCode(tranCode);
-        tranBookFindObj.setTranRefID(tranRefID);
-        tranBookFindObj.setTranID(tranID);
-
-        TranBook tranBook = tranBookDao.find(tranBookFindObj).get(0);
-        loggerService.systemLogger(CommonConstant.SID, "Insert transaction book complete.",
-                tranBookFindObj);
-        return tranBook;
+        loggerService.systemLogger(CommonConstant.SID, "Insert transaction book complete.", tranBookInsertObjList);
     }
 
 

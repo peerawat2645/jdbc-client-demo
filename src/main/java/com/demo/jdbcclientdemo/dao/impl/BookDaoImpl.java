@@ -74,8 +74,7 @@ public class BookDaoImpl implements BookDao {
 
         try {
             sql.append("SELECT *").append(DatabaseConstant.FROM).append(TABLE);
-            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
-                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND).append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
             sql.append(" ORDER BY ").append(CREATE_DATE).append(" DESC");
             parameters.add(CommonConstant.FLAG_ACTIVE);
 
@@ -101,8 +100,7 @@ public class BookDaoImpl implements BookDao {
 
         try {
             sql.append("SELECT *").append(DatabaseConstant.FROM).append(TABLE);
-            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
-                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND).append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
             //sql.append(DatabaseConstant.WHERE_0_EQUAL_0);
 
             sql.append(" ORDER BY ").append(CREATE_DATE).append(" DESC");
@@ -134,12 +132,10 @@ public class BookDaoImpl implements BookDao {
 
         try {
             sql.append("SELECT *").append(DatabaseConstant.FROM).append(TABLE);
-            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
-                    .append(BOOK_NAME).append(DatabaseConstant.LIKE_QUESTION_MARK).append(DatabaseConstant.AND)
-                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK); // Adjust to your database's wildcard syntax
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND).append(BOOK_NAME).append(DatabaseConstant.LIKE_QUESTION_MARK).append(DatabaseConstant.AND).append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK); // Adjust to your database's wildcard syntax
 
             sql.append(" ORDER BY ").append(CREATE_DATE).append(" DESC");
-            parameters.add(" %"+name+"% " );
+            parameters.add("%" + name + "%");
             parameters.add(CommonConstant.FLAG_ACTIVE);
 
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
@@ -175,87 +171,51 @@ public class BookDaoImpl implements BookDao {
 
             if (findObject != null) {
                 if (findObject.getCreateDate() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(CREATE_DATE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(CREATE_DATE).append(DatabaseConstant.EQUAL_STR_DATE_QUESTION_MARK);
                     parameters.add(findObject.getCreateDate());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getCreateBy())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(CREATE_BY)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(CREATE_BY).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getCreateBy());
                 }
                 if (findObject.getUpdateDate() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(UPDATE_DATE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(UPDATE_DATE).append(DatabaseConstant.EQUAL_STR_DATE_QUESTION_MARK);
                     parameters.add(findObject.getUpdateDate());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getUpdateBy())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(UPDATE_BY)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(UPDATE_BY).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getUpdateBy());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getIsDelete())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(IS_DELETE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(IS_DELETE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getIsDelete());
                 }
                 if (findObject.getBookID() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(BOOK_ID)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getBookID().longValue());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getName())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(BOOK_NAME)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(BOOK_NAME).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getName());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getTitle())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(BOOK_TITLE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(BOOK_TITLE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTitle());
                 }
                 if (findObject.getTranIDGenerate() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_ID_GENERATE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_ID_GENERATE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranIDGenerate().longValue());
                 }
                 if (findObject.getTranIDVerify() != null) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_ID_VERIFY)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_ID_VERIFY).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranIDVerify());
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getTranStatusCode())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_STATUS_CODE)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(CommonConstant.FLAG_ACTIVE);
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getTranStatusGroup())) {
-                    sql
-                            .append(DatabaseConstant.AND)
-                            .append(TRAN_STATUS_GROUP)
-                            .append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    sql.append(DatabaseConstant.AND).append(TRAN_STATUS_GROUP).append(DatabaseConstant.EQUAL_QUESTION_MARK);
                     parameters.add(findObject.getTranStatusGroup());
                 }
 
@@ -263,21 +223,17 @@ public class BookDaoImpl implements BookDao {
 
             sql.append(" order by ").append(CREATE_DATE).append(" DESC ");
 
-            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY,
-                    sql.toString());
-            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_PARAMETERS,
-                    Arrays.toString(parameters.toArray()));
+            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
+            loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_PARAMETERS, Arrays.toString(parameters.toArray()));
 
             resultList = jdbcTemplate.query(sql.toString(), parameters.toArray(), ROW_MAPPER);
 
         } catch (DataAccessException e) {
-            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getBookID()) : null,
-                    CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getBookID()) : null, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
             throw e;
 
         } catch (Exception e) {
-            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getBookID()) : null,
-                    CommonConstant.LOG_DATABASE_EXCEPTION, e);
+            loggerService.printStackTraceToErrorLog(findObject != null ? String.valueOf(findObject.getBookID()) : null, CommonConstant.LOG_DATABASE_EXCEPTION, e);
             throw e;
         }
 
@@ -292,9 +248,7 @@ public class BookDaoImpl implements BookDao {
 
         try {
             sql.append("SELECT * ").append(DatabaseConstant.FROM).append(TABLE);
-            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
-                    .append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.AND)
-                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND).append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.AND).append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
 
             parameters.add(id);
             parameters.add(CommonConstant.FLAG_ACTIVE);
@@ -321,45 +275,23 @@ public class BookDaoImpl implements BookDao {
 
 
     @Override
-    public void insert(Book insertObject) throws Exception {
+    public BigInteger insert(Book insertObject) throws Exception {
         StringBuilder sql = new StringBuilder();
         ArrayList<Object> parameters = new ArrayList<>();
 
         try {
 
             //setup column
-            sql
-                    .append(" insert into ").append(TABLE).append(" (")
-                    .append(CREATE_DATE).append(DatabaseConstant.SIGN_COMMA)
-                    .append(CREATE_BY).append(DatabaseConstant.SIGN_COMMA)
-                    .append(IS_DELETE).append(DatabaseConstant.SIGN_COMMA);
+            sql.append(" insert into ").append(TABLE).append(" (").append(CREATE_DATE).append(DatabaseConstant.SIGN_COMMA).append(CREATE_BY).append(DatabaseConstant.SIGN_COMMA).append(IS_DELETE).append(DatabaseConstant.SIGN_COMMA);
 
-            sql
-                    .append(BOOK_ID).append(DatabaseConstant.SIGN_COMMA)
-                    .append(BOOK_NAME).append(DatabaseConstant.SIGN_COMMA)
-                    .append(BOOK_TITLE).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_ID_GENERATE).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_ID_VERIFY).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_STATUS_GROUP).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_STATUS_CODE)
-                    .append(")");
+            sql.append(BOOK_ID).append(DatabaseConstant.SIGN_COMMA).append(BOOK_NAME).append(DatabaseConstant.SIGN_COMMA).append(BOOK_TITLE).append(DatabaseConstant.SIGN_COMMA).append(TRAN_ID_GENERATE).append(DatabaseConstant.SIGN_COMMA).append(TRAN_ID_VERIFY).append(DatabaseConstant.SIGN_COMMA).append(TRAN_STATUS_GROUP).append(DatabaseConstant.SIGN_COMMA).append(TRAN_STATUS_CODE).append(")");
 
             if (insertObject != null) {
                 sql.append(" values ");
                 //setup prepareStatement
-                sql.append(" ( ")
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                sql.append(" ( ").append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
 
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                        .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                        .append(" ) ");
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(DatabaseConstant.SIGN_QUESTION_MARK).append(" ) ");
 
                 //setup object statement
                 parameters.add(insertObject.getCreateDate());
@@ -380,6 +312,10 @@ public class BookDaoImpl implements BookDao {
 
             jdbcTemplate.update(sql.toString(), parameters.toArray());
 
+            // Fetch the last inserted ID
+            BigInteger lastInsertedId = BigInteger.valueOf(jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Long.class));
+            return lastInsertedId;
+
         } catch (DataAccessException e) {
             loggerService.printStackTraceToErrorLog(CommonConstant.SID, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
             throw e;
@@ -396,20 +332,9 @@ public class BookDaoImpl implements BookDao {
 
         try {
             //setup update columns
-            sql.append("UPDATE ").append(TABLE).append(" SET ")
-                    .append(UPDATE_DATE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(UPDATE_BY).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(BOOK_NAME).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(BOOK_TITLE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_ID_GENERATE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_ID_VERIFY).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_STATUS_GROUP).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(IS_DELETE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+            sql.append("UPDATE ").append(TABLE).append(" SET ").append(UPDATE_DATE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(UPDATE_BY).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(BOOK_NAME).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(BOOK_TITLE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(TRAN_ID_GENERATE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(TRAN_ID_VERIFY).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(TRAN_STATUS_GROUP).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA).append(IS_DELETE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
 
-            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
-                    .append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND).append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
 
             parameters.add(updateObject.getUpdateDate());
             parameters.add(updateObject.getUpdateBy());
@@ -446,8 +371,7 @@ public class BookDaoImpl implements BookDao {
 
         try {
             // Setup delete query
-            sql.append("DELETE ").append(DatabaseConstant.FROM).append(TABLE).append(DatabaseConstant.WHERE_0_EQUAL_0)
-                    .append(DatabaseConstant.AND).append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+            sql.append("DELETE ").append(DatabaseConstant.FROM).append(TABLE).append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND).append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
 
             parameters.add(bookID);
 
