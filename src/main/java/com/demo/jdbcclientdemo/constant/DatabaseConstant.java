@@ -18,5 +18,4 @@ public class DatabaseConstant {
     public static final String CLOSE_PARENTHESIS = " ) ";
     public static final String WHERE_0_EQUAL_0 = " where 0 = 0 ";
     public static final String FROM = " from ";
-
 }

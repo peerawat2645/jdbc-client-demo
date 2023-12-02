@@ -115,6 +115,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public GetBookResponse insert(InsertBookRequest insertBookRequest) throws Exception {
         Date currentDate = new Date();
+        GetBookResponse response = new GetBookResponse();
 
         //1) Insert data to main transaction.
         insertTransactionMain(CommonConstant.TRAN_CREATE_BOOK, CommonConstant.FLAG_N, null, currentDate);
@@ -150,7 +151,6 @@ public class BookServiceImpl implements BookService {
 
         bookList.add(book);
 
-        GetBookResponse response = new GetBookResponse();
         response.setBooks(bookList);
         response.setStatusCode(CommonConstant.RESPONSE_CODE_SUCCESS);
         response.setStatus(CommonConstant.SUCCESS_CODE);
@@ -216,12 +216,28 @@ public class BookServiceImpl implements BookService {
         Book book = bookDao.findById(bookID);
         if (book != null) {
             Date currentDate = new Date();
-            TranBook tranBook = tranBookDao.findById(book.getTranIDVerify());
-            TranAll tranAll = tranAllDao.findById(tranBook.getTranRefID());
+            TranBook tranBook;
+            if(book.getTranIDVerify() != null) {
+                tranBook = tranBookDao.findById(book.getTranIDVerify());
+            }
+            else{
+                tranBook = tranBookDao.findById(book.getTranIDGenerate());
+            }
+            TranAll tranAll;
+            if(tranBook.getTranRefID() != null) {
+                tranAll = tranAllDao.findById(tranBook.getTranRefID());
+            }
+            else{
+                tranAll = tranAllDao.findById(tranBook.getTranID());
+            }
             insertTransactionMain(CommonConstant.TRAN_DELETE_BOOK, CommonConstant.FLAG_Y, tranAll.getTranID(), currentDate);
             tranAll = findTransactionMain(null, CommonConstant.TRAN_DELETE_BOOK, CommonConstant.FLAG_Y, null, null, tranAll.getTranID(), currentDate);
-            insertTransactionBookMain(CommonConstant.FLAG_Y, null, book.getName(), book.getTitle(), CommonConstant.TRAN_DELETE_BOOK, tranAll.getTranID(), tranAll.getTranID(), currentDate);
-            bookDao.deleteById(bookID);
+            insertTransactionBookMain(CommonConstant.FLAG_Y, bookID, book.getName(), book.getTitle(), CommonConstant.TRAN_DELETE_BOOK, tranAll.getTranID(), tranAll.getTranID(), currentDate);
+            book.setIsDelete(CommonConstant.FLAG_Y);
+            book.setTranStatusCode(CommonConstant.FLAG_INACTIVE);
+            book.setUpdateDate(currentDate);
+            book.setUpdateBy(CommonConstant.SYSTEM);
+            bookDao.update(book);
 
             response.setStatusCode(CommonConstant.RESPONSE_CODE_SUCCESS);
             response.setStatus(CommonConstant.SUCCESS_CODE);
@@ -286,7 +302,7 @@ public class BookServiceImpl implements BookService {
         bookFindObj.setTitle(title);
         bookFindObj.setTranIDGenerate(tranIDGenerate);
         bookFindObj.setTranIDVerify(tranIDVerify);
-        bookFindObj.setTranStatusCode(CommonConstant.TRAN_GROUP);
+        bookFindObj.setTranStatusGroup(CommonConstant.TRAN_GROUP);
         bookFindObj.setTranStatusCode(CommonConstant.FLAG_ACTIVE);
 
         List<Book> bookList = bookDao.find(bookFindObj);

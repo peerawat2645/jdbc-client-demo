@@ -65,19 +65,24 @@ public class BookDaoImpl implements BookDao {
 
         return mapperObject;
     };
+
     @Override
     public List<Book> findAll() throws Exception {
         StringBuilder sql = new StringBuilder();
         List<Book> resultList = new ArrayList<>();
+        List<Object> parameters = new ArrayList<>();
 
         try {
             sql.append("SELECT *").append(DatabaseConstant.FROM).append(TABLE);
-            //sql.append(DatabaseConstant.WHERE_0_EQUAL_0);
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
+                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
             sql.append(" ORDER BY ").append(CREATE_DATE).append(" DESC");
+            parameters.add(CommonConstant.FLAG_ACTIVE);
+
 
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
 
-            resultList = jdbcTemplate.query(sql.toString(), ROW_MAPPER);
+            resultList = jdbcTemplate.query(sql.toString(), parameters.toArray(), ROW_MAPPER);
         } catch (DataAccessException e) {
             loggerService.printStackTraceToErrorLog(CommonConstant.SID, CommonConstant.LOG_DATABASE_ACCESS_SQL_EXCEPTION, e);
             throw e;
@@ -92,16 +97,21 @@ public class BookDaoImpl implements BookDao {
     public Page<Book> findAll(Pageable pageable) throws Exception {
         StringBuilder sql = new StringBuilder();
         List<Book> resultList;
+        List<Object> parameters = new ArrayList<>();
 
         try {
             sql.append("SELECT *").append(DatabaseConstant.FROM).append(TABLE);
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
+                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
             //sql.append(DatabaseConstant.WHERE_0_EQUAL_0);
 
             sql.append(" ORDER BY ").append(CREATE_DATE).append(" DESC");
 
+            parameters.add(CommonConstant.FLAG_ACTIVE);
+
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
 
-            resultList = jdbcTemplate.query(sql.toString(), ROW_MAPPER);
+            resultList = jdbcTemplate.query(sql.toString(), parameters.toArray(), ROW_MAPPER);
 
             int start = (int) pageable.getOffset();
             int end = Math.min((start + pageable.getPageSize()), resultList.size());
@@ -120,21 +130,22 @@ public class BookDaoImpl implements BookDao {
     public Page<Book> findAllByName(String name, Pageable pageable) throws Exception {
         StringBuilder sql = new StringBuilder();
         List<Book> resultList;
+        List<Object> parameters = new ArrayList<>();
 
         try {
             sql.append("SELECT *").append(DatabaseConstant.FROM).append(TABLE);
-            sql.append(" WHERE ").append(BOOK_NAME).append(" LIKE ?"); // Adjust to your database's wildcard syntax
-
-            // Additional search conditions or parameters can be added here
-            // For example:
-            // sql.append(" AND ").append(ANOTHER_COLUMN).append(" = ?");
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
+                    .append(BOOK_NAME).append(DatabaseConstant.LIKE_QUESTION_MARK).append(DatabaseConstant.AND)
+                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK); // Adjust to your database's wildcard syntax
 
             sql.append(" ORDER BY ").append(CREATE_DATE).append(" DESC");
+            parameters.add(" %"+name+"% " );
+            parameters.add(CommonConstant.FLAG_ACTIVE);
 
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
 
             // Pass the name parameter to the query
-            resultList = jdbcTemplate.query(sql.toString(), ROW_MAPPER, "%" + name + "%"); // Adjust to your database's wildcard syntax
+            resultList = jdbcTemplate.query(sql.toString(), parameters.toArray(), ROW_MAPPER); // Adjust to your database's wildcard syntax
 
             int start = (int) pageable.getOffset();
             int end = Math.min((start + pageable.getPageSize()), resultList.size());
@@ -160,7 +171,7 @@ public class BookDaoImpl implements BookDao {
         try {
 
             sql.append(" select * from ").append(TABLE);
-            sql.append(" where 0 = 0 ");
+            sql.append(DatabaseConstant.WHERE_0_EQUAL_0);
 
             if (findObject != null) {
                 if (findObject.getCreateDate() != null) {
@@ -238,7 +249,7 @@ public class BookDaoImpl implements BookDao {
                             .append(DatabaseConstant.AND)
                             .append(TRAN_STATUS_CODE)
                             .append(DatabaseConstant.EQUAL_QUESTION_MARK);
-                    parameters.add(findObject.getTranStatusCode());
+                    parameters.add(CommonConstant.FLAG_ACTIVE);
                 }
                 if (StringUtils.isNotEmptyOrNull(findObject.getTranStatusGroup())) {
                     sql
@@ -282,9 +293,11 @@ public class BookDaoImpl implements BookDao {
         try {
             sql.append("SELECT * ").append(DatabaseConstant.FROM).append(TABLE);
             sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
-                    .append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    .append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.AND)
+                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
 
             parameters.add(id);
+            parameters.add(CommonConstant.FLAG_ACTIVE);
 
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
             loggerService.systemLogger(TABLE, CommonConstant.LOG_DATABASE_PARAMETERS, Arrays.toString(parameters.toArray()));
@@ -333,33 +346,33 @@ public class BookDaoImpl implements BookDao {
 
             if (insertObject != null) {
                 sql.append(" values ");
-                    //setup prepareStatement
-                    sql.append(" ( ")
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                //setup prepareStatement
+                sql.append(" ( ")
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
 
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                            .append(DatabaseConstant.SIGN_QUESTION_MARK)
-                            .append(" ) ");
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                        .append(DatabaseConstant.SIGN_QUESTION_MARK)
+                        .append(" ) ");
 
-                    //setup object statement
-                    parameters.add(insertObject.getCreateDate());
-                    parameters.add(insertObject.getCreateBy());
-                    parameters.add(insertObject.getIsDelete());
+                //setup object statement
+                parameters.add(insertObject.getCreateDate());
+                parameters.add(insertObject.getCreateBy());
+                parameters.add(insertObject.getIsDelete());
 
-                    parameters.add(null != insertObject.getBookID() ? insertObject.getBookID().longValue() : null);
-                    parameters.add(insertObject.getName());
-                    parameters.add(insertObject.getTitle());
-                    parameters.add(null != insertObject.getTranIDGenerate() ? insertObject.getTranIDGenerate().longValue() : null);
-                    parameters.add(null != insertObject.getTranIDVerify() ? insertObject.getTranIDVerify().longValue() : null);
-                    parameters.add(insertObject.getTranStatusGroup());
-                    parameters.add(insertObject.getTranStatusCode());
+                parameters.add(null != insertObject.getBookID() ? insertObject.getBookID().longValue() : null);
+                parameters.add(insertObject.getName());
+                parameters.add(insertObject.getTitle());
+                parameters.add(null != insertObject.getTranIDGenerate() ? insertObject.getTranIDGenerate().longValue() : null);
+                parameters.add(null != insertObject.getTranIDVerify() ? insertObject.getTranIDVerify().longValue() : null);
+                parameters.add(insertObject.getTranStatusGroup());
+                parameters.add(insertObject.getTranStatusCode());
             }
 
             loggerService.systemLogger(CommonConstant.SID, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
@@ -392,7 +405,8 @@ public class BookDaoImpl implements BookDao {
                     .append(TRAN_ID_GENERATE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
                     .append(TRAN_ID_VERIFY).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
                     .append(TRAN_STATUS_GROUP).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
-                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
+                    .append(TRAN_STATUS_CODE).append(DatabaseConstant.EQUAL_QUESTION_MARK).append(DatabaseConstant.SIGN_COMMA)
+                    .append(IS_DELETE).append(DatabaseConstant.EQUAL_QUESTION_MARK);
 
             sql.append(DatabaseConstant.WHERE_0_EQUAL_0).append(DatabaseConstant.AND)
                     .append(BOOK_ID).append(DatabaseConstant.EQUAL_QUESTION_MARK);
@@ -406,7 +420,9 @@ public class BookDaoImpl implements BookDao {
             parameters.add(updateObject.getTranIDVerify());
             parameters.add(updateObject.getTranStatusGroup());
             parameters.add(updateObject.getTranStatusCode());
+            parameters.add(updateObject.getIsDelete());
             parameters.add(updateObject.getBookID());
+
 
             loggerService.systemLogger(CommonConstant.SID, CommonConstant.LOG_DATABASE_QUERY, sql.toString());
             loggerService.systemLogger(CommonConstant.SID, CommonConstant.LOG_DATABASE_PARAMETERS, Arrays.toString(parameters.toArray()));

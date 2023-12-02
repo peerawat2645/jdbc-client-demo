@@ -26,6 +26,7 @@ public class CommonConstant {
     public static final String FLAG_1 = "1";
     public static final String FLAG_T = "T";
     public static final String FLAG_ACTIVE = "active";
+    public static final String FLAG_INACTIVE = "inactive";
 
     public static final String RESPONSE_CODE_SUCCESS = "000000";
     public static final String SUCCESS_CODE = "200";
